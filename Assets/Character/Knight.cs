@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knight : MonoBehaviour
+public class Knight : Creature 
 {
-    Animator animator;
-
-    Rigidbody2D rigidbody;
-
+   
     bool onGround = true;
 
     private bool onStair;
 
     [SerializeField]
-    float jumpForce;
+    float jumpForce=300;
+
+  [SerializeField]
+    Transform attackPoint;
 
     [SerializeField]
-    float speed;
+    float attackRange;
 
-   
+   [SerializeField]
+    float hitDelay;
+
     float stairSpeed =5;
     public bool OnStair
     {
@@ -39,22 +41,31 @@ public class Knight : MonoBehaviour
 
     }
 
-
-    [SerializeField]
+   [SerializeField]
     Transform GroundCheck;
-    void Awake()
+    private void Attack()
     {
-        animator = gameObject.GetComponentInChildren<Animator>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
 
-
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (!GameObject.Equals(hits[i].gameObject, gameObject))
+            {
+                IDestructable destructable = hits[i].gameObject.GetComponent<IDestructable>();
+                if (destructable != null)
+                {
+                    Debug.Log("Hit " + destructable.ToString());
+                    destructable.Hit(damage);
+                    break;
+                }
+            }
+        }
     }
+
     void Start()
     {
 
     }
-
-
     private bool CheckGround()
     {
         RaycastHit2D[] hits = Physics2D.LinecastAll(transform.position, GroundCheck.position);
@@ -83,6 +94,8 @@ public class Knight : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             animator.SetTrigger("Attack");
+            //Attack();
+            Invoke("Attack", hitDelay);
         }
 
         if (transform.localScale.x < 0)

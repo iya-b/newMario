@@ -2,28 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dragon : MonoBehaviour
+public class Dragon : Creature
 {
+    
     [SerializeField]
-    private float health = 100;
-   
-    [SerializeField]
-    private float speed;
-    public float Health
+    CircleCollider2D hitCollider;
+    public void Attack()
     {
-    get { return health; }
-    set { health = value; }
+        Vector3 hitPosition = transform.TransformPoint(hitCollider.offset);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(hitPosition, hitCollider.radius);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (!GameObject.Equals(hits[i].gameObject, gameObject))
+            {
+                IDestructable destructable = hits[i].gameObject.GetComponent<IDestructable>();
+                if (destructable != null)
+                {
+                    destructable.Hit(damage);
+                }
+            }
+        }
     }
 
-    private Rigidbody2D rigidbody;
-    private Animator animator;
 
-    private void Awake()
-    {
-        animator = gameObject.GetComponent<Animator>();
-        rigidbody = GetComponent<Rigidbody2D>();
-
-    }
     void Start()
     {
         
@@ -43,7 +45,7 @@ public class Dragon : MonoBehaviour
 
         if (knight != null)
         {
-            animator.SetTrigger("Attack");
+            animator.SetTrigger("attack");
         }
         else
         {
@@ -62,4 +64,5 @@ public class Dragon : MonoBehaviour
         }
 
     }
+  
 }
