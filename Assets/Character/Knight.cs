@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Knight : Creature 
 {
@@ -12,13 +10,13 @@ public class Knight : Creature
     [SerializeField]
     float jumpForce=300;
 
-  [SerializeField]
+    [SerializeField]
     Transform attackPoint;
 
     [SerializeField]
     float attackRange;
 
-   [SerializeField]
+    [SerializeField]
     float hitDelay;
 
     float stairSpeed =5;
@@ -41,7 +39,7 @@ public class Knight : Creature
 
     }
 
-   [SerializeField]
+    [SerializeField]
     Transform GroundCheck;
     private void Attack()
     {
@@ -64,7 +62,7 @@ public class Knight : Creature
 
     void Start()
     {
-
+        health = GameController.Instance.MaxHealth;
     }
     private bool CheckGround()
     {

@@ -34,9 +34,9 @@ public class Creature : MonoBehaviour, IDestructable
     public void Hit(float damage)
     {
 
-        Health -= damage;
+        health -= damage;
         GameController.Instance.Hit(this);
-        if (Health <= 0)
+        if (health <= 0)
         {
             Die();
         }
